@@ -1,2 +1,2 @@
 # BudgetForecasting
-Forecasting Budget cost and component related to budget cost 
+Forecasting Budget cost and components related to budget cost 
