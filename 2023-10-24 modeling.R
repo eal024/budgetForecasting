@@ -3,18 +3,29 @@
 library(forecast)
 library(xts)
 library(tidyverse)
+source("~/budgetForecasting/appendix.R")
 
 # Test data
-df
+df2 <- df1 |> filter( str_detect(cat, "samlet 50"))
 
-# Graphical look
-plot( x = df$date, y = df$value, "ln")
+ts_data <- df2 |> pull(value) |> ts( start = c(2021, 1), frequency = 12 )
 
-# Tesing for stationarity
+fun_hw <- function( ts_train, start = c(2023, 10), h){
+    
+    # Execute the model
+    model_hw  <- ets( ts_train, model = "AAA")    
+    # Return list with info
+    list( model    = model_hw,
+          obj.fc   = forecast(model_hw, h = h),
+          fc       = fun_fc_tibble_convert(  fc = forecast(model_hw, h = h) ) |> 
+              mutate( date = as.character(date) ),
+          name.model = "holt Winter"
+    )
+}
 
-## Arima auto
-auto.arima( y = df$value, seasonal = T)
 
-model_diff <- auto.arima( y = diff(df$value) )
 
-acf(model_diff$residuals)
+
+fun_hw( ts_train = ts_data, h = 1  )$fc 
+
+
